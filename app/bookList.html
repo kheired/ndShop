@@ -1,0 +1,16 @@
+<style>
+    img{
+        width: 120px;
+        height: 160px;
+    }
+</style>
+<div class="panel panel-default col-md-3" ng-repeat="book in books track by $index">
+    <div class="panel-heading">{{book.bookName}}</div>
+    <div class="panel-body text-center">
+        <img ng-src="{{book.bookCover}}" alt="">
+    </div>
+    <div class="panel-footer clearfix">
+        价格：{{book.bookPrice | currency:'$'}}
+        <a href="/bookDetail/{{book._id}}" class="btn btn-primary btn-xs pull-right">点击了解详情</a>
+    </div>
+</div>

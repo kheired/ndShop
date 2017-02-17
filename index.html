@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <base href="/" />
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div class="navbar navbar-inverse">
+    <div class="container-fluid"></div>
+    <div class="navbar-header">
+        <a href="/" class="navbar-brand">我的书店</a>
+    </div>
+    <div>
+        <ul class="nav navbar-nav">
+            <li><a href="/">首页</a></li>
+            <li><a href="/bookList">展示页</a></li>
+            <li><a href="/bookAdd">增加图书</a></li>
+        </ul>
+    </div>
+</div>
+<div ng-view class="container"></div>
+<script src="node_modules/angular/angular.js"></script>
+<script src="node_modules/angular-resource/angular-resource.js"></script>
+<script src="node_modules/angular-route/angular-route.js"></script>
+<script>
+    var app=angular.module('appModule',['ngResource','ngRoute']);
+    app.factory('$book',function ($resource) {
+        //angular-resource 配置restful接口，restful风格，访问路径都一样，用请求方式来区分
+        return $resource('/books/:bid',null,{
+            update:{method:'PUT'}
+        })
+    });
+    app.config(function ($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode(true);
+        $routeProvider.when('/',{
+            templateUrl:'app/index.html',
+            controller:'indexCtrl'
+        }).when('/bookList',{
+            templateUrl:'app/bookList.html',
+            controller:'listCtrl'
+        }).when('/bookAdd',{
+            templateUrl:'app/bookAdd.html',
+            controller:'addCtrl'
+        }).when('/bookDetail/:bookId',{
+            templateUrl:'app/bookDetail.html',
+            controller:'detailCtrl'
+        }).otherwise('/')
+    });
+    app.controller('indexCtrl',['$scope',function ($scope) {
+        $scope.name='欢迎来到本小店';
+    }]);
+    app.controller('listCtrl',['$scope','$book',function ($scope, $book) {
+        $scope.books=$book.query();
+    }]);
+    app.controller('addCtrl',['$scope','$book','$location',function ($scope, $book,$location) {
+        $scope.save=function () {
+            $book.save($scope.book).$promise.then(function () {
+                $location.path('/bookList')
+            })
+        }
+    }]);
+    app.controller('detailCtrl',['$scope','$book','$location','$routeParams',function ($scope, $book,$location,$routeParams) {
+        var id=$routeParams.bookId;
+        $book.get({bid:id}).$promise.then(function (item) {
+            $scope.book=item;
+            $scope.nb=JSON.parse(JSON.stringify(item));
+        });
+        $scope.remove=function (id) {
+            $book.delete({bid:id}).$promise.then(function () {
+                $location.path('/bookList');
+            })
+        };
+        $scope.flag=true;
+        $scope.cancel=function () {
+            $scope.flag=true;
+            $scope.nb=JSON.parse(JSON.stringify($scope.book));
+        };
+        $scope.update=function () {
+            $book.update({bid:id},$scope.nb).$promise.then(function (item) {
+                $scope.book=item;
+                $scope.flag=true;
+            })
+        }
+    }])
+</script>
+</body>
+</html>

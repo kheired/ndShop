@@ -1,0 +1,25 @@
+<form class="form-horizontal">
+    <div class="form-group">
+        <label for="bookname" class="control-label col-md-2">书名</label>
+        <div class="col-md-10">
+            <input type="text" id="bookname" name="bookname" class="form-control" ng-model="book.bookName">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="bookcover" class="control-label col-md-2">书的封面</label>
+        <div class="col-md-10">
+            <input type="text" id="bookcover" name="bookcover" class="form-control" ng-model="book.bookCover">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="bookprice" class="control-label col-md-2">书的价格</label>
+        <div class="col-md-10">
+            <input type="text" id="bookprice" name="bookprice" class="form-control" ng-model="book.bookPrice">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10 col-md-offset-2">
+            <button class="btn btn-primary btn-lg" ng-click="save()">点击增加</button>
+        </div>
+    </div>
+</form>
